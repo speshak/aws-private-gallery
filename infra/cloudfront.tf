@@ -19,7 +19,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     acm_certificate_arn            = "${data.aws_acm_certificate.domain.arn}"
     cloudfront_default_certificate = false
     iam_certificate_id             = ""
-    minimum_protocol_version       = "TLSv1"
+    minimum_protocol_version       = "TLSv1.2_2018"
     ssl_support_method             = "sni-only"
   }
 
