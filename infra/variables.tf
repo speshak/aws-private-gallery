@@ -21,3 +21,4 @@ variable "website_domain" {
 variable "contact_email" {
   description = "Reply-to address for outbound emails"
 }
+

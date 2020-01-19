@@ -6,7 +6,7 @@ data "aws_acm_certificate" "domain" {
 }
 
 resource "aws_cloudfront_distribution" "distribution" {
-  aliases             = ["${var.website_domain}"]
+  aliases             = [var.website_domain]
   price_class         = "PriceClass_100"
   retain_on_delete    = "false"
   web_acl_id          = ""
@@ -14,8 +14,6 @@ resource "aws_cloudfront_distribution" "distribution" {
   enabled             = true
   http_version        = "http2"
   is_ipv6_enabled     = false
-  logging_config      = []
-  tags                = []
 
   viewer_certificate {
     acm_certificate_arn            = "${data.aws_acm_certificate.domain.arn}"
@@ -27,16 +25,14 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   restrictions {
     geo_restriction {
-      locations        = []
       restriction_type = "none"
     }
   }
 
   origin {
-    domain_name   = "${aws_api_gateway_rest_api.login.id}.execute-api.${var.aws_region}.amazonaws.com"
-    origin_id     = "Login API gateway"
-    origin_path   = "/prod"
-    custom_header = []
+    domain_name = "${aws_api_gateway_rest_api.login.id}.execute-api.${var.aws_region}.amazonaws.com"
+    origin_id   = "Login API gateway"
+    origin_path = "/prod"
 
     custom_origin_config {
       http_port                = 80
@@ -49,14 +45,12 @@ resource "aws_cloudfront_distribution" "distribution" {
   }
 
   origin {
-    custom_header        = []
-    custom_origin_config = []
-    domain_name          = "${aws_s3_bucket.bucket.bucket_domain_name}"
-    origin_id            = "S3-${var.s3_bucket_name}"
-    origin_path          = ""
+    domain_name = aws_s3_bucket.bucket.bucket_domain_name
+    origin_id   = "S3-${var.s3_bucket_name}"
+    origin_path = ""
 
     s3_origin_config {
-      origin_access_identity = "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
     }
   }
 
@@ -76,24 +70,20 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   # Login API endpoint
   # No cache, no auth required
-  cache_behavior {
-    allowed_methods             = ["GET", "HEAD", "OPTIONS"]
-    cached_methods              = ["GET", "HEAD"]
-    compress                    = false
-    default_ttl                 = 0
-    max_ttl                     = 0
-    min_ttl                     = 0
-    lambda_function_association = []
-    path_pattern                = "/api/*"
-    smooth_streaming            = false
-    target_origin_id            = "Login API gateway"
-    trusted_signers             = []
-    viewer_protocol_policy      = "https-only"
+  ordered_cache_behavior {
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = false
+    default_ttl            = 0
+    max_ttl                = 0
+    min_ttl                = 0
+    path_pattern           = "/api/*"
+    smooth_streaming       = false
+    target_origin_id       = "Login API gateway"
+    viewer_protocol_policy = "https-only"
 
     forwarded_values {
-      headers                 = []
-      query_string            = true
-      query_string_cache_keys = []
+      query_string = true
 
       cookies {
         forward           = "whitelist"
@@ -104,28 +94,23 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   # Error pages
   # No cache, no auth required
-  cache_behavior {
-    allowed_methods             = ["HEAD", "GET", "OPTIONS"]
-    cached_methods              = ["HEAD", "GET"]
-    compress                    = false
-    default_ttl                 = 0
-    max_ttl                     = 0
-    min_ttl                     = 0
-    lambda_function_association = []
-    path_pattern                = "/errors/*"
-    smooth_streaming            = false
-    target_origin_id            = "S3-${var.s3_bucket_name}"
-    trusted_signers             = []
-    viewer_protocol_policy      = "https-only"
+  ordered_cache_behavior {
+    allowed_methods        = ["HEAD", "GET", "OPTIONS"]
+    cached_methods         = ["HEAD", "GET"]
+    compress               = false
+    default_ttl            = 0
+    max_ttl                = 0
+    min_ttl                = 0
+    path_pattern           = "/errors/*"
+    smooth_streaming       = false
+    target_origin_id       = "S3-${var.s3_bucket_name}"
+    viewer_protocol_policy = "https-only"
 
     forwarded_values {
-      headers                 = []
-      query_string            = false
-      query_string_cache_keys = []
+      query_string = false
 
       cookies {
-        forward           = "none"
-        whitelisted_names = []
+        forward = "none"
       }
     }
   }
@@ -134,26 +119,22 @@ resource "aws_cloudfront_distribution" "distribution" {
   # Requires auth (trusted_signers)
   # Cache = 15,552,000 seconds = 6 months
   default_cache_behavior {
-    allowed_methods             = ["HEAD", "GET", "OPTIONS"]
-    cached_methods              = ["HEAD", "GET"]
-    compress                    = true
-    default_ttl                 = 15552000
-    max_ttl                     = 15552000
-    min_ttl                     = 15552000
-    smooth_streaming            = false
-    target_origin_id            = "S3-${var.s3_bucket_name}"
-    trusted_signers             = ["self"]
-    lambda_function_association = []
-    viewer_protocol_policy      = "redirect-to-https"
+    allowed_methods        = ["HEAD", "GET", "OPTIONS"]
+    cached_methods         = ["HEAD", "GET"]
+    compress               = true
+    default_ttl            = 15552000
+    max_ttl                = 15552000
+    min_ttl                = 15552000
+    smooth_streaming       = false
+    target_origin_id       = "S3-${var.s3_bucket_name}"
+    trusted_signers        = ["self"]
+    viewer_protocol_policy = "redirect-to-https"
 
     forwarded_values {
-      headers                 = []
-      query_string            = false
-      query_string_cache_keys = []
+      query_string = false
 
       cookies {
-        forward           = "none"
-        whitelisted_names = []
+        forward = "none"
       }
     }
   }
@@ -162,3 +143,4 @@ resource "aws_cloudfront_distribution" "distribution" {
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "CloudFront origin access identity"
 }
+

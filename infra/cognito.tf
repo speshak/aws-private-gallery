@@ -1,5 +1,5 @@
 resource "aws_cognito_user_pool" "pool" {
-  name                       = "${var.project_name}"
+  name                       = var.project_name
   mfa_configuration          = "OFF"
   username_attributes        = ["email"]
   auto_verified_attributes   = ["email"]
@@ -12,7 +12,7 @@ resource "aws_cognito_user_pool" "pool" {
 
     invite_message_template {
       email_subject = "Welcome to ${var.project_name}"
-      email_message = "${file("templates/email-invite.html")}"
+      email_message = file("templates/email-invite.html")
       sms_message   = "Your username is {username} and temporary password is {####}."
     }
   }
@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool" "pool" {
   }
 
   email_configuration {
-    reply_to_email_address = "${var.contact_email}"
+    reply_to_email_address = var.contact_email
   }
 
   password_policy {
@@ -35,19 +35,19 @@ resource "aws_cognito_user_pool" "pool" {
   }
 
   lambda_config {
-    pre_sign_up        = "${aws_lambda_function.whitelist.arn}"
-    pre_authentication = "${aws_lambda_function.whitelist.arn}"
+    pre_sign_up        = aws_lambda_function.whitelist.arn
+    pre_authentication = aws_lambda_function.whitelist.arn
   }
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
-  domain       = "${replace(var.website_domain, ".", "-")}"
-  user_pool_id = "${aws_cognito_user_pool.pool.id}"
+  domain       = replace(var.website_domain, ".", "-")
+  user_pool_id = aws_cognito_user_pool.pool.id
 }
 
 resource "aws_cognito_user_pool_client" "client" {
   name                                 = "client"
-  user_pool_id                         = "${aws_cognito_user_pool.pool.id}"
+  user_pool_id                         = aws_cognito_user_pool.pool.id
   callback_urls                        = ["https://${var.website_domain}/api/callback"]
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_flows_user_pool_client = true
@@ -55,3 +55,4 @@ resource "aws_cognito_user_pool_client" "client" {
   read_attributes                      = ["email", "email_verified"]
   supported_identity_providers         = ["COGNITO"]
 }
+

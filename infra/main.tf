@@ -11,7 +11,8 @@ provider "aws" {
   shared_credentials_file = "~/.aws/credentials"
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
 
 locals {
   cognito_oauth_server = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${var.aws_region}.amazoncognito.com"
@@ -24,9 +25,10 @@ output "gallery_url" {
 }
 
 output "login_url" {
-  value = "${local.cognito_login_url}"
+  value = local.cognito_login_url
 }
 
 output "logout_url" {
-  value = "${local.cognito_logout_url}"
+  value = local.cognito_logout_url
 }
+
