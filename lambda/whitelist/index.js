@@ -1,4 +1,4 @@
-const whitelist = require('emails.js')
+const whitelist = require('./emails.js')
 
 exports.handler = function (event, context) {
   const signupEmail = event.request.userAttributes.email
