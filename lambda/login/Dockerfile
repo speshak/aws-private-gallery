@@ -1,4 +1,4 @@
-FROM lambci/lambda:build
+FROM lambci/lambda:build-nodejs12.x
 
 # working folder
 RUN mkdir /build
