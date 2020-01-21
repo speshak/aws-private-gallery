@@ -16,6 +16,19 @@ resource "aws_s3_bucket" "bucket" {
     enabled    = false
     mfa_delete = false
   }
+
+  lifecycle_rule {
+    id = "cleanup"
+    enabled = true
+
+    tags = {
+      "autoclean" = "true"
+    }
+
+    expiration {
+      days = 30
+    }
+  }
 }
 
 data "template_file" "login" {
