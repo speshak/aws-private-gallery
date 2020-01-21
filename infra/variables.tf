@@ -22,3 +22,6 @@ variable "contact_email" {
   description = "Reply-to address for outbound emails"
 }
 
+variable "acm_cert_arn" {
+  description = "ARN of ACM certificate"
+}

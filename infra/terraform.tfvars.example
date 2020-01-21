@@ -11,3 +11,5 @@ top_level_domain = "example.com"
 website_domain = "www.example.com"
 
 contact_email = "contact@example.com"
+
+acm_cert_arn = "arn:aws:acm:us-east-1:XXXXXX/XXXXXX"

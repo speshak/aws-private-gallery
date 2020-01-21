@@ -1,10 +1,3 @@
-data "aws_acm_certificate" "domain" {
-  provider    = "aws.useast1"
-  domain      = "${var.website_domain}"
-  types       = ["AMAZON_ISSUED"]
-  most_recent = true
-}
-
 resource "aws_cloudfront_distribution" "distribution" {
   aliases             = [var.website_domain]
   price_class         = "PriceClass_100"
@@ -16,7 +9,7 @@ resource "aws_cloudfront_distribution" "distribution" {
   is_ipv6_enabled     = false
 
   viewer_certificate {
-    acm_certificate_arn            = "${data.aws_acm_certificate.domain.arn}"
+    acm_certificate_arn            = var.acm_cert_arn
     cloudfront_default_certificate = false
     iam_certificate_id             = ""
     minimum_protocol_version       = "TLSv1.2_2018"
