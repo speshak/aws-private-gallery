@@ -13,3 +13,7 @@ website_domain = "www.example.com"
 contact_email = "contact@example.com"
 
 acm_cert_arn = "arn:aws:acm:us-east-1:XXXXXX/XXXXXX"
+
+cf_logging_bucket = "logging_bucket_name.s3.amazonaws.com"
+
+cf_logging_prefix = "log_prefix"

@@ -25,3 +25,11 @@ variable "contact_email" {
 variable "acm_cert_arn" {
   description = "ARN of ACM certificate"
 }
+
+variable "cf_logging_bucket" {
+  description = "Buckets to write CloudFront logs to"
+}
+
+variable "cf_logging_prefix" {
+  description = "Buckets to write CloudFront logs to"
+}

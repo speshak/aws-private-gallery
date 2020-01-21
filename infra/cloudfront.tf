@@ -8,6 +8,12 @@ resource "aws_cloudfront_distribution" "distribution" {
   http_version        = "http2"
   is_ipv6_enabled     = false
 
+  logging_config {
+    include_cookies = false
+    bucket          = var.cf_logging_bucket
+    prefix          = var.cf_logging_prefix
+  }
+
   viewer_certificate {
     acm_certificate_arn            = var.acm_cert_arn
     cloudfront_default_certificate = false
