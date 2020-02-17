@@ -121,9 +121,9 @@ resource "aws_cloudfront_distribution" "distribution" {
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
     cached_methods         = ["HEAD", "GET"]
     compress               = true
-    default_ttl            = 15552000
+    default_ttl            = 3600
     max_ttl                = 15552000
-    min_ttl                = 15552000
+    min_ttl                = 300
     smooth_streaming       = false
     target_origin_id       = "S3-${var.s3_bucket_name}"
     trusted_signers        = ["self"]
